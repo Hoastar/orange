@@ -203,24 +203,3 @@ func ProcessStructure(c *gin.Context, processId int, workOrderId int) (result ma
 	}
 	return result, nil
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

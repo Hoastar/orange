@@ -39,4 +39,3 @@ func (t *JSONTime) Scan(v interface{}) error {
 	}
 	return fmt.Errorf("无法转换 %v 的时间格式", v)
 }
-

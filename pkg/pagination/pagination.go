@@ -127,24 +127,3 @@ func countRecords(db *gorm.DB, anyType interface{}, done chan bool, count *int) 
 	db.Model(anyType).Count(count)
 	done <- true
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

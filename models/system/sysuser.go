@@ -329,22 +329,3 @@ func (e *SysUser) SetPwd(pwd SysUserPwd) (Rseult bool, err error) {
 	tools.HasError(err, "更新密码失败(代码202)", 500)
 	return
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

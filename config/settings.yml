@@ -1,0 +1,59 @@
+script:
+  path: ./static/scripts
+settings:
+  application:
+    domain: localhost:8002
+    host: 0.0.0.0
+    ishttps: false
+    mode: prod
+    name: orange
+    port: 8002
+    readtimeout: 1
+    writertimeout: 2
+  database:
+    dbtype: mysql
+    host: 127.0.0.1
+    name: orange
+    password: mypass
+    port: 3307
+    username: root
+  domain:
+    gethost: 1
+    url: localhost:9527
+  email:
+    alias: orange
+    host: smtp.qiye.aliyun.com
+    pass: Swwork0410
+    port: 465
+    user: hyq@swifthealth.cn
+  gorm:
+    logmode: 0
+    maxidleconn: 0
+    maxopenconn: 20000
+  jwt:
+    secret: orange
+    timeout: 86400
+  ldap:
+    anonymousquery: 0
+    basedn: dc=fdevops,dc=com
+    bindpwd: 123456
+    binduserdn: cn=admin,dc=fdevops,dc=com
+    host: localhost
+    port: 389
+    tls: 0
+    userfield: uid
+  log:
+    compress: 1
+    consolestdout: 1
+    filestdout: 0
+    level: debug
+    localtime: 1
+    maxage: 30
+    maxbackups: 300
+    maxsize: 10240
+    path: ./logs/orange.log
+  redis:
+    url: redis://q1w2e3r4@127.0.0.1:6379
+  ssl:
+    key: keystring
+    pem: temp/pem.pem

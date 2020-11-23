@@ -47,26 +47,3 @@ func DriverDigitFunc() (id, base64 string, err error) {
 	cap := base64Captcha.NewCaptcha(driver, store)
 	return cap.Generate()
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

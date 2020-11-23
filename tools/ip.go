@@ -41,26 +41,3 @@ func GetLocation(ip string) string {
 	}
 	return m["province"] + "_" + m["city"]
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -246,6 +246,7 @@ func SysUserUpdatePwd(c *gin.Context) {
 			app.Error(c, -1, err, "")
 			return
 		}
+	/*
 	} else if pwd.PasswordType == 1 {
 		// 修改ladp密码
 		err = ldap.LdapUpdataPwd(tools.GetUserId(c), pwd.OldPassword, pwd.NewPassword)
@@ -254,6 +255,8 @@ func SysUserUpdatePwd(c *gin.Context) {
 			return
 		}
 	}
+
+	 */
 	app.Ok(c, "", "密码修改成功")
 }
 

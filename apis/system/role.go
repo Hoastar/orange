@@ -74,7 +74,7 @@ func GetRole(c *gin.Context) {
 		return
 	}
 
-	menuIds, err := Role.GetRoleMenu()
+	menuIds, err := Role.GetRoleMenuId()
 
 	if err != nil {
 		app.Error(c, -1, err, "")

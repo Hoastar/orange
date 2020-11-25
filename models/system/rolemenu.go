@@ -31,6 +31,25 @@ type MenuPath struct {
 	Path string `json:"path"`
 }
 
+func(rm *RoleMenu) GetPermis() ([]string, error) {
+	var r []Menu
+	table := orm.Eloquent.Select("sys_menu.permisson").Table("sys_menu").
+		Joins("left join sys_role_menu on sys_menu.menu_id=sys_role_menu.menu_id")
+	table = table.Where("role_id= ?", rm.RoleId)
+
+	table = table.Where("sys_menu.menu_type in('F', 'C')")
+	if err := table.Find(&r).Error; err != nil {
+		return nil, err
+	}
+
+	var list []string
+	for i := 0; i < len(r); i++ {
+		list = append(list, r[i].Permission)
+	}
+	return list, nil
+
+}
+
 func (rm *RoleMenu) GetIDS() ([]MenuPath, error) {
 	var r []MenuPath
 	table := orm.Eloquent.Select("sys_menu.path").Table("sys_role_menu")

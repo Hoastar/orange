@@ -27,6 +27,41 @@ func (Post) TableName() string {
 	return "sys_post"
 }
 
+func (e *Post) Get() (Post, error) {
+	var doc Post
+
+	table := orm.Eloquent.Table(e.TableName())
+	if e.PostId != 0 {
+		table = table.Where("post_id = ?", e.PostId)
+	}
+	if e.PostName != "" {
+		table = table.Where("post_name = ?", e.PostName)
+	}
+	if e.PostCode != "" {
+		table = table.Where("post_code = ?", e.PostCode)
+	}
+	if e.Status != "" {
+		table = table.Where("status = ?", e.Status)
+	}
+
+	if err := table.First(&doc).Error; err != nil {
+		return doc, err
+	}
+	return doc, nil
+}
+
+func (e *Post) Create() (Post, error) {
+	var doc Post
+	result := orm.Eloquent.Table(e.TableName()).Create(&e)
+	if result.Error != nil {
+		err := result.Error
+		return doc, err
+	}
+
+	doc = *e
+	return doc, nil
+}
+
 func (e *Post) GetList() ([]Post, error) {
 	var doc []Post
 

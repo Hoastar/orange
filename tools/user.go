@@ -41,6 +41,17 @@ func GetUserId(c *gin.Context) int {
 	return 0
 }
 
+func GetUserIdStr(c *gin.Context) string {
+	data := ExtractClaims(c)
+	if data["identity"] != nil {
+		return Int64ToString(int64((data["identity"]).(float64)))
+	}
+
+	logger.Info("********** 路径：" + c.Request.URL.Path + "  请求方法：" + c.Request.Method + "  缺少identity")
+	return ""
+
+}
+
 func GetUserIdToStr(c *gin.Context) string {
 	data := ExtractClaims(c)
 	if data["identity"] != nil {
@@ -49,3 +60,46 @@ func GetUserIdToStr(c *gin.Context) string {
 	logger.Info("********** 路径：" + c.Request.URL.Path + "  请求方法：" + c.Request.Method + "  缺少identity")
 	return ""
 }
+
+func GetRoleName(c *gin.Context) string  {
+	data := ExtractClaims(c)
+	if data["rolekey"] != nil {
+		return (data["rolekey"]).(string)
+	}
+
+	fmt.Println("********** 路径：" + c.Request.URL.Path + "  请求方法：" + c.Request.Method + "  缺少rolekey")
+	return ""
+}
+
+func GetRoleId(c *gin.Context) int {
+	data := ExtractClaims(c)
+	if data["roleid"] != nil {
+		i := int((data["roleid"]).(float64))
+		return i
+	}
+
+	fmt.Println("********** 路径：" + c.Request.URL.Path + "  请求方法：" + c.Request.Method + "  缺少roleid")
+	return 0
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

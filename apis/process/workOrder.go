@@ -15,10 +15,12 @@ import (
 	"github.com/hoastar/orange/global/orm"
 	"github.com/hoastar/orange/models/process"
 	"github.com/hoastar/orange/models/system"
+	"github.com/hoastar/orange/pkg/notify"
 	"github.com/hoastar/orange/pkg/service"
 	"github.com/hoastar/orange/tools"
 	"github.com/hoastar/orange/tools/app"
 	"strconv"
+	"time"
 )
 
 // 流程结构包括节点、转流和模板
@@ -321,3 +323,163 @@ func InversionWorkOrder(c *gin.Context) {
 }
 
 // 催办工单
+func UrgeWorkOrder(c *gin.Context) {
+	var (
+		workOrderInfo	process.WorkOrderInfo
+		sendToUserList	[]system.SysUser
+		stateList		[]interface{}
+		userInfo		system.SysUser
+	)
+
+	workOrderId := c.DefaultQuery("workOrder", "")
+	if workOrderId == "" {
+		app.Error(c, -1, errors.New("参数不正确， 缺失workOrderId"), "")
+		return
+	}
+
+	// 查询工单数据
+	err := orm.Eloquent.Model(&process.WorkOrderInfo{}).
+		Where("id = ?", workOrderId).
+		Find(&workOrderInfo).Error
+	if err != nil {
+		app.Error(c, -1, err, fmt.Sprintf("查询工单信息失败, %v", err.Error()))
+		return
+	}
+
+	// 确认是否可以催办
+	if workOrderInfo.UrgeLastTime != 0 && (int(time.Now().Unix())-workOrderInfo.UrgeLastTime) < 600 {
+		app.Error(c, -1, errors.New("十分钟内无法多次催办工单。"), "")
+		return
+	}
+
+	// 获取当前工单处理人信息
+	err = json.Unmarshal(workOrderInfo.State, &stateList)
+	if err != nil {
+		app.Error(c, -1, err, "")
+		return
+	}
+	sendToUserList, err = service.GetPrincipalUserInfo(stateList, workOrderInfo.Creator)
+
+	// 查询创建人信息
+	err = orm.Eloquent.Model(&system.SysUser{}).Where("user_id = ?", workOrderInfo.Creator).
+		Find(&userInfo).Error
+	if err != nil {
+		app.Error(c, -1, err, fmt.Sprintf("创建人信息查询失败，%v", err.Error()))
+		return
+	}
+
+	// 发送催办提醒
+	bodyData := notify.BodyData{
+		SendTo: map[string]interface{}{
+			"userList": sendToUserList,
+		},
+
+		Subject: "您被催办工单了，请及时处理。",
+		Description: "您有一条待办工单，请及时处理，工单描述如下",
+		Classify:    []int{1}, // todo 1 表示邮箱,后续拓展
+		ProcessId: workOrderInfo.Id,
+		Title: workOrderInfo.Title,
+		Creator: userInfo.NickName,
+		Priority: workOrderInfo.Priority,
+		CreatedAt: workOrderInfo.CreatedAt.Format("2006-01-02 15:04:05"),
+	}
+	err = bodyData.SendNotify()
+	if err != nil {
+		app.Error(c, -1, err, fmt.Sprintf("催办提醒发送失败，%v", err.Error()))
+		return
+	}
+
+	// 更新数据库
+	err = orm.Eloquent.Model(&process.WorkOrderInfo{}).Where("id = ?", workOrderInfo.Id).
+		Update(map[string]interface{}{
+			"urge_count": workOrderInfo.UrgeCount + 1,
+			"urge_last_time": int(time.Now().Unix()),
+	}).Error
+	if err != nil {
+		app.Error(c, -1, err, fmt.Sprintf("更新催办信息失败，%v", err.Error()))
+		return
+	}
+	app.Ok(c,"", "")
+}
+
+// 主动处理
+func ActiveOrder(c *gin.Context) {
+	var (
+		workOrderId string
+		err 		error
+		stateValue	[]struct{
+			ID				string `json:"id"`
+			Label   		string `json:"label"`
+			ProcessMethod	string `json:"process_method"`
+			Processor		[]int  `json:"processor"`
+		}
+		stateValueByte	[]byte
+	)
+
+	workOrderId = c.Param("id")
+
+	err = c.ShouldBind(&stateValue)
+	if err != nil {
+		app.Error(c, -1, err, "")
+		return
+	}
+
+	stateValueByte, err = json.Marshal(stateValue)
+	if err != nil {
+		app.Error(c, -1, fmt.Errorf("转byte失败， %v", err.Error()), "")
+		return
+	}
+
+	err = orm.Eloquent.Model(&process.WorkOrderInfo{}).
+		Where("id = ?", workOrderId).
+		Update("state", stateValueByte).Error
+
+	if err != nil {
+		app.Error(c, -1, fmt.Errorf("接单失败， %v", err.Error()), "")
+		return
+	}
+	app.Ok(c, "", "接单成功， 请即使处理")
+}
+
+// 删除工单
+func DeleteWorkOrder(c *gin.Context) {
+	workOrderId := c.Param("id")
+	err := orm.Eloquent.Delete(&process.WorkOrderInfo{}, workOrderId).Error
+	if err != nil {
+		app.Error(c, -1, err, "")
+		return
+	}
+	app.Ok(c, "", "工单已经删除")
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

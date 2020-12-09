@@ -13,7 +13,7 @@ import (
 	"github.com/hoastar/orange/pkg/logger"
 	"github.com/hoastar/orange/tools"
 	"golang.org/x/crypto/bcrypt"
-	"golang.org/x/tools/go/ssa/interp/testdata/src/strings"
+	"strings"
 )
 
 type User struct {

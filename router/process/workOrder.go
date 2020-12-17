@@ -10,12 +10,12 @@ package process
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/hoastar/orange/apis/process"
-	"github.com/hoastar/orange/middlerware"
+	"github.com/hoastar/orange/middleware"
 	jwt "github.com/hoastar/orange/pkg/jwtauth"
 )
 
 func RegisterWorkOrderRouter(v1 *gin.RouterGroup, authMiddleware *jwt.GinJWTMiddleware) {
-	workOrderRouter := v1.Group("/work-order").Use(authMiddleware.MiddlewareFunc()).Use(middlerware.AuthCheckRole())
+	workOrderRouter := v1.Group("/work-order").Use(authMiddleware.MiddlewareFunc()).Use(middleware.AuthCheckRole())
 	{
 		workOrderRouter.GET("/process-structure", process.ProcessStructure)
 		workOrderRouter.POST("/create", process.CreateWorkOrder)

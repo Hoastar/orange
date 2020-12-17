@@ -5,9 +5,9 @@ settings:
     domain: localhost:8002
     host: 0.0.0.0
     ishttps: false
-    mode: prod
+    mode: dev
     name: orange
-    port: 8002
+    port: "8002"
     readtimeout: 1
     writertimeout: 2
   database:
@@ -57,3 +57,5 @@ settings:
   ssl:
     key: keystring
     pem: temp/pem.pem
+  public:
+    isLocation: 0

@@ -10,6 +10,5 @@ package main
 import "github.com/hoastar/orange/cmd"
 
 func main() {
-	cmd.Excute()
+	cmd.Execute()
 }
-

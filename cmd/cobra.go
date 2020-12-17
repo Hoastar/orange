@@ -43,8 +43,8 @@ func init() {
 }
 
 
-// Excute: apply commands
-func Excute() {
+// Execute: apply commands
+func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(-1)
 	}

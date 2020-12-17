@@ -120,3 +120,70 @@ func InsertRole(c *gin.Context) {
 	}
 	app.Ok(c, data, "添加成功")
 }
+
+// @Summary 修改用户角色
+// @Description 获取JSON
+// @Tags 角色/Role
+// @Accept  application/json
+// @Product application/json
+// @Param data body models.SysRole true "body"
+// @Success 200 {string} string	"{"code": 200, "message": "修改成功"}"
+// @Success 200 {string} string	"{"code": -1, "message": "修改失败"}"
+// @Router /api/v1/role [put]
+func UpdateRole(c *gin.Context) {
+	var (
+		data system.SysRole
+		t    system.RoleMenu
+		err  error
+	)
+	data.UpdateBy = tools.GetUserIdStr(c)
+	err = c.Bind(&data)
+	if err != nil {
+		app.Error(c, -1, err, "")
+		return
+	}
+	result, err := data.Update(data.RoleId)
+	if err != nil {
+		app.Error(c, -1, err, "")
+		return
+	}
+	_, err = t.DeleteRoleMenu(data.RoleId)
+	if err != nil {
+		app.Error(c, -1, err, "")
+		return
+	}
+	_, err = t.Insert(data.RoleId, data.MenuIds)
+	if err != nil {
+		app.Error(c, -1, err, "")
+		return
+	}
+
+	app.Ok(c, result, "修改成功")
+}
+
+// @Summary 删除用户角色
+// @Description 删除数据
+// @Tags 角色/Role
+// @Param roleId path int true "roleId"
+// @Success 200 {string} string	"{"code": 200, "message": "删除成功"}"
+// @Success 200 {string} string	"{"code": -1, "message": "删除失败"}"
+// @Router /api/v1/role/{roleId} [delete]
+
+func DeleteRole(c *gin.Context) {
+	var Role system.SysRole
+	Role.UpdateBy = tools.GetUserIdStr(c)
+
+	IDS := tools.IdsStrToIdsIntGroup("roleId", c)
+	_, err := Role.BatchDelete(IDS)
+	if err != nil {
+		app.Error(c, -1, err, "")
+		return
+	}
+	var t system.RoleMenu
+	_, err = t.BatchDeleteRoleMenu(IDS)
+	if err != nil {
+		app.Error(c, -1, err, "")
+		return
+	}
+	app.Ok(c, "", "删除成功")
+}

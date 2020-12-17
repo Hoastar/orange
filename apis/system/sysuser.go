@@ -100,6 +100,64 @@ func GetSysUser(c *gin.Context) {
 	})
 }
 
+// @Summary 获取当前登录用户
+// @Description 获取JSON
+// @Tags 个人中心
+// @Success 200 {object} app.Response "{"code": 200, "data": [...]}"
+// @Router /api/v1/user/profile [get]
+// @Security
+func GetSysUserProfile(c *gin.Context) {
+	var (
+		Dept    system.Dept
+		Post    system.Post
+		SysRole system.SysRole
+		SysUser system.SysUser
+	)
+	userId := tools.GetUserIdStr(c)
+	SysUser.UserId, _ = tools.StringToInt(userId)
+	result, err := SysUser.Get()
+	if err != nil {
+		app.Error(c, -1, err, "")
+		return
+	}
+	//获取角色列表
+	roles, err := SysRole.GetList()
+	if err != nil {
+		app.Error(c, -1, err, "")
+		return
+	}
+	//获取职位列表
+	posts, err := Post.GetList()
+	if err != nil {
+		app.Error(c, -1, err, "")
+		return
+	}
+	//获取部门列表
+	Dept.DeptId = result.DeptId
+	dept, err := Dept.Get()
+	if err != nil {
+		app.Error(c, -1, err, "")
+		return
+	}
+
+	postIds := make([]int, 0)
+	postIds = append(postIds, result.PostId)
+
+	roleIds := make([]int, 0)
+	roleIds = append(roleIds, result.RoleId)
+
+	app.Custum(c, gin.H{
+		"code":    200,
+		"data":    result,
+		"postIds": postIds,
+		"roleIds": roleIds,
+		"roles":   roles,
+		"posts":   posts,
+		"dept":    dept,
+	})
+}
+
+
 // @Summary 获取用户的角色和职位
 // @Description 获取json
 // @Tag 用户
@@ -246,6 +304,7 @@ func SysUserUpdatePwd(c *gin.Context) {
 			app.Error(c, -1, err, "")
 			return
 		}
+	}
 	/*
 	} else if pwd.PasswordType == 1 {
 		// 修改ladp密码
@@ -255,41 +314,6 @@ func SysUserUpdatePwd(c *gin.Context) {
 			return
 		}
 	}
-
 	 */
 	app.Ok(c, "", "密码修改成功")
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

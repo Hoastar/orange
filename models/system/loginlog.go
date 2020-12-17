@@ -35,6 +35,23 @@ func (LoginLog) TableName() string {
 	return "sys_loginlog"
 }
 
+func (e *LoginLog) Get() (LoginLog, error) {
+	var doc LoginLog
+
+	table := orm.Eloquent.Table(e.TableName())
+	if e.Ipaddr != "" {
+		table = table.Where("ipaddr = ?", e.Ipaddr)
+	}
+	if e.InfoId != 0 {
+		table = table.Where("info_id = ?", e.InfoId)
+	}
+
+	if err := table.First(&doc).Error; err != nil {
+		return doc, err
+	}
+	return doc, nil
+}
+
 func (e *LoginLog) Create() (LoginLog, error) {
 	var doc LoginLog
 	e.CreateBy = "0"

@@ -118,7 +118,7 @@ func ProcessWorkOrder(c *gin.Context) {
 			Tasks		[]string
 			TargetState	string	`json:"target_state"` // 目标状态
 			SourceState string	`json:"source_state"` // 源状态
-			WorkOrderId	int		`json:"work_order_id"` // 工单ID
+			WorkOrderId	int	`json:"work_order_id"` // 工单ID
 			Circulation string	`json:"circulation"`	// 流转ID
 			FlowProperties int	`json:"flow_properties"` // 流转类型 0拒绝，1同意，2其他
 			Remarks     string	`json:"remarks"`		// 处理的备注信息

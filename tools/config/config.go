@@ -10,7 +10,7 @@ package config
 
 import (
 	"fmt"
-	logger2 "github.com/hoastar/orange/pkg/logger"
+	"github.com/hoastar/orange/pkg/logger"
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"os"
@@ -28,13 +28,13 @@ func ConfigSetup(path string) {
 	viper.SetConfigFile(path)
 	content, err := ioutil.ReadFile(path)
 	if err != nil {
-		logger2.Fatal(fmt.Sprintf("Read config file fail: %s", err.Error()))
+		logger.Fatal(fmt.Sprintf("Read config file fail: %s", err.Error()))
 	}
 
 	//Replace environment variables
 	err = viper.ReadConfig(strings.NewReader(os.ExpandEnv(string(content))))
 	if err != nil {
-		logger2.Fatal(fmt.Sprintf("Parse config file fail: %s", err.Error()))
+		logger.Fatal(fmt.Sprintf("Parse config file fail: %s", err.Error()))
 	}
 
 	// data init
@@ -66,7 +66,7 @@ func ConfigSetup(path string) {
 	SslConfig = InitSsl(cfgSsl)
 
 	// 日志配置
-	logger2.Init()
+	logger.Init()
 }
 
 func SetConfig(configPath string, key string, value interface{}) {

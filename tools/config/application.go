@@ -3,14 +3,15 @@ package config
 import "github.com/spf13/viper"
 
 type Application struct {
-	Readtimeout int
+	Readtimeout   int
 	Writertimeout int
-	Name string
-	Domain string
-	Host string
-	IsHttps bool
-	Mode string
-	Port string
+	Name          string
+	Domain        string
+	Host          string
+	IsHttps       bool
+	Mode          string
+	Port          string
+	JwtSecret     string
 }
 
 func InitApplication(cfg *viper.Viper) *Application {
@@ -20,8 +21,11 @@ func InitApplication(cfg *viper.Viper) *Application {
 		Domain: cfg.GetString("domain"),
 		Host: cfg.GetString("host"),
 		IsHttps: cfg.GetBool("ishttps"),
+		JwtSecret: cfg.GetString("jwtSecret"),
 		Mode: cfg.GetString("mode"),
+		Name: cfg.GetString("name"),
 		Port: setPortDefault(cfg),
+
 	}
 }
 

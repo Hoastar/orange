@@ -11,6 +11,7 @@ import (
 	"bytes"
 	"strconv"
 
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/hoastar/orange/global/orm"
 	"github.com/hoastar/orange/pkg/logger"
 	"github.com/hoastar/orange/tools/config"

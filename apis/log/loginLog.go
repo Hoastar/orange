@@ -76,6 +76,29 @@ func InsertLoginLog(c *gin.Context) {
 	c.JSON(http.StatusOK, res.ReturnOK())
 }
 
+// @Summary 通过编码获取登录日志
+// @Description 获取JSON
+// @Tags 登录日志
+// @Param infoId path int true "infoId"
+// @Success 200 {object} app.Response "{"code": 200, "data": [...]}"
+// @Router /api/v1/loginlog/{infoId} [get]
+// @Security
+func GetLoginLog(c *gin.Context) {
+	var (
+		res      app.Response
+		LoginLog system.LoginLog
+	)
+	LoginLog.InfoId, _ = tools.StringToInt(c.Param("infoId"))
+	result, err := LoginLog.Get()
+	if err != nil {
+		app.Error(c, -1, err, "")
+		return
+	}
+
+	res.Data = result
+	c.JSON(http.StatusOK, res.ReturnOK())
+}
+
 // @Summary 修改登录日志
 // @Description 获取JSON
 // @Success 200 {string} string	"{"code": 200, "message": "添加成功"}"

@@ -7,8 +7,10 @@
 
 package process
 
+import "github.com/hoastar/orange/models/base"
+
 type CirculationHistory struct {
-	Title        string `gorm:"column:title; type: varchar(128)" json:"title" form:"title"`                     	// 工单标题
+	Title        string `gorm:"column:title; type: varchar(128)" json:"title" form:"title"`                         // 工单标题
 	WorkOrder    int    `gorm:"column:work_order; type: int(11)" json:"work_order" form:"work_order"`               // 工单ID
 	State        string `gorm:"column:state; type: varchar(128)" json:"state" form:"state"`                         // 工单状态
 	Source       string `gorm:"column:source; type: varchar(128)" json:"source" form:"source"`                      // 源节点ID
@@ -18,6 +20,7 @@ type CirculationHistory struct {
 	ProcessorId  int    `gorm:"column:processor_id; type: int(11)" json:"processor_id" form:"processor_id"`         // 处理人ID
 	CostDuration string `gorm:"column:cost_duration; type: varchar(128)" json:"cost_duration" form:"cost_duration"` // 处理时长
 	Remarks      string `gorm:"column:remarks; type: longtext" json:"remarks" form:"remarks"`                       // 备注
+	base.Model
 }
 
 

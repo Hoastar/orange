@@ -128,7 +128,7 @@ func Authenticator(c *gin.Context) (interface{}, error) {
 // @Router /logout [post]
 // @Security
 
-func Logout(c *gin.Context) {
+func LogOut(c *gin.Context) {
 	var loginlog system.LoginLog
 	ua := user_agent.New(c.Request.UserAgent())
 	loginlog.Ipaddr = c.ClientIP()
@@ -173,23 +173,3 @@ func Unauthorized(c *gin.Context, code int, message string) {
 		"msg": message,
 	})
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

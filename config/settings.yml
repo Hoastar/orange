@@ -1,7 +1,15 @@
 script:
   path: ./static/scripts
 settings:
-  application: "8002"
+  application:
+    domain: localhost:8002
+    host: 0.0.0.0
+    ishttps: false
+    mode: dev
+    name: orange
+    port: "8002"
+    readtimeout: 1
+    writertimeout: 2
   database:
     dbtype: mysql
     host: 127.0.0.1

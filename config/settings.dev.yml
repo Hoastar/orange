@@ -2,8 +2,8 @@ script:
   path: ./static/scripts
 settings:
   application:
-    domain: localhost:8002
-    host: 0.0.0.0
+    domain: 192.168.43.35:8002
+    host: 192.168.43.35
     ishttps: false
     mode: dev
     name: orange
@@ -12,14 +12,14 @@ settings:
     writertimeout: 2
   database:
     dbtype: mysql
-    host: 127.0.0.1
+    host: 192.168.43.35
     name: orange
     password: mypass
-    port: 3307
+    port: 3306
     username: root
   domain:
     gethost: 1
-    url: localhost:9527
+    url: 192.168.43.35:9527
   email:
     alias: orange
     host: smtp.qiye.aliyun.com

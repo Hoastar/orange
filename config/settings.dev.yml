@@ -19,7 +19,7 @@ settings:
     username: root
   domain:
     gethost: 1
-    url: 192.168.43.35:9527
+    url: localhost:9527
   email:
     alias: orange
     host: smtp.qiye.aliyun.com

@@ -9,8 +9,8 @@ package dashboard
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/hoastar/orange/middlerware"
 	"github.com/hoastar/orange/apis/dashboard"
+	"github.com/hoastar/orange/middleware"
 	jwt "github.com/hoastar/orange/pkg/jwtauth"
 )
 

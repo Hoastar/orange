@@ -20,3 +20,6 @@ type Settings struct {
 	Content  json.RawMessage `gorm:"column:content; type:json" json:"content" form:"content"`
 }
 
+func (Settings) TableName() string {
+	return "sys_settings"
+}

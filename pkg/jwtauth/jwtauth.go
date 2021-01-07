@@ -510,6 +510,19 @@ func (mw *GinJWTMiddleware) ParseTokenString(token string) (*jwt.Token, error) {
 	})
 }
 
+// RefreshHandler can be used to refresh a token. The token still needs to be valid on refresh.
+// Shall be put under an endpoint that is using the GinJWTMiddleware.
+// Reply will be of the form {"token": "TOKEN"}.
+func (mw *GinJWTMiddleware) RefreshHandler(c *gin.Context) {
+	tokenString, expire, err := mw.RefreshToken(c)
+	if err != nil {
+		mw.unauthorized(c, http.StatusUnauthorized, mw.HTTPStatusMessageFunc(err, c))
+		return
+	}
+
+	mw.RefreshResponse(c, http.StatusOK, tokenString, expire)
+}
+
 // GetClaimsFromJWT get claims from JWT token
 func (mw *GinJWTMiddleware) GetClaimsFromJWT(c *gin.Context) (MapClaims, error) {
 	token, err := mw.ParseToken(c)
@@ -529,6 +542,47 @@ func (mw *GinJWTMiddleware) GetClaimsFromJWT(c *gin.Context) (MapClaims, error) 
 	}
 
 	return claims, nil
+}
+
+// RefreshToken refresh token and check if token is expired
+func (mw *GinJWTMiddleware) RefreshToken(c *gin.Context) (string, time.Time, error) {
+	claims, err := mw.CheckIfTokenExpire(c)
+	if err != nil {
+		return "", time.Now(), err
+	}
+
+	// Create the token
+	newToken := jwt.New(jwt.GetSigningMethod(mw.SigningAlgorithm))
+	newClaims := newToken.Claims.(jwt.MapClaims)
+
+	for key := range claims {
+		newClaims[key] = claims[key]
+	}
+
+	expire := mw.TimeFunc().Add(mw.Timeout)
+	newClaims["exp"] = expire.Unix()
+	newClaims["orig_iat"] = mw.TimeFunc().Unix()
+	tokenString, err := mw.signedString(newToken)
+
+	if err != nil {
+		return "", time.Now(), err
+	}
+
+	// set cookie
+	if mw.SendCookie {
+		maxage := int(expire.Unix() - time.Now().Unix())
+		c.SetCookie(
+			mw.CookieName,
+			tokenString,
+			maxage,
+			"/",
+			mw.CookieDomain,
+			mw.SecureCookie,
+			mw.CookieHTTPOnly,
+		)
+	}
+
+	return tokenString, expire, nil
 }
 
 // LoginHandler can be used by clients to get a jwt token
